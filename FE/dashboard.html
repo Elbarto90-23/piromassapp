@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Pirotecnica F.lli Massa</title>
+    <link href="css/style.css" rel="stylesheet">
+    <meta content="#ff8000" name="theme-color"> <!-- Colore del tema -->
+</head>
+<body>
+<div class="background"></div> <!-- Aggiunto div per il gradiente -->
+<header>
+    <nav>
+        <div class="logo" id="menu-toggle">
+            <img alt="Pirotecnica F.lli Massa" src="logo/logo_colorato.JPG"/>
+        </div>
+        <ul class="hidden-menu" id="menu">
+            <li><a href="dashboard.html">Home</a></li>
+            <li><a href="catalogo.html">Catalogo</a></li>
+            <div class="butt_name">
+                <button id="userNameButton" class="name">Nome</button>
+            </div>
+
+        </ul>
+
+    </nav>
+</header>
+<main id="home">
+    <section class="promozioni">
+        <h1>Offerte del momento</h1>
+
+        <!-- Contenuto delle offerte e promozioni -->
+    </section>
+</main>
+<section class="gray-strip" id="preventivo">
+    <h2>Richiedi un Preventivo</h2>
+    <p>Per richiedere un preventivo per uno spettacolo, visita il nostro <a
+            href="https://www.pirotecnicamassa.com/preventivi/" target="_blank">sito web</a>.</p>
+</section>
+
+<footer>
+    <div id="mappa">
+        <iframe allowfullscreen=""
+                height="450" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2573.1214897785653!2d9.092539775086925!3d39.29401532320625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12e73731b2688751%3A0x50323328ba8e61d5!2sPirotecnica%20Fratelli%20Massa%20Store!5e1!3m2!1sit!2sit!4v1727449256281!5m2!1sit!2sit" style="border:0;"
+                width="600"></iframe>
+    </div>
+    <p>&copy; 2024 Vendita Fuochi d'Artificio. Tutti i diritti riservati.</p>
+</footer>
+
+<script>
+    //scrivi admin se il ruolo è admin altrimenti scrvi solo il nome
+    // Recupera i dati salvati in sessionStorage
+    const userName = sessionStorage.getItem("userName");
+    const userRole = sessionStorage.getItem("userRole");
+
+    // Riferimento al bottone con ID "userNameButton"
+    const userNameButton = document.getElementById("userNameButton");
+
+    // Aggiorna il testo del pulsante solo se il ruolo è "ADMIN"
+    if (userName) {
+        if (userRole === "ADMIN") {
+            userNameButton.textContent = `${userName} (Admin)`;
+        } else {
+            userNameButton.textContent = `${userName}`;
+        }
+    } else {
+        userNameButton.textContent = "Utente non riconosciuto";
+    }
+</script>
+
+
+
+</body>
+</html>

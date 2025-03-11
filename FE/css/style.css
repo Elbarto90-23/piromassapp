@@ -1,0 +1,670 @@
+/* Variabili CSS per una gestione più facile dei colori e valori comuni */
+:root {
+    --primary-color: #FF8000E6;
+    --secondary-color: black;
+    --text-color: white;
+    --header-height: 70px;
+    --border-radius: 4px;
+    --transition-speed: 0.3s;
+}
+
+/* Reset e impostazioni di base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Sfondo con gradiente */
+.background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(80deg, var(--primary-color) 50%, var(--secondary-color) 50%);
+    z-index: -1;
+}
+
+/* Stili body */
+body {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 1200px;
+    background-color: #f4f4f4;
+    font-family: Arial, sans-serif;
+    color: var(--text-color);
+    font-size: 1rem;
+    line-height: 1.6;
+    padding-top: var(--header-height);
+}
+
+/* Header e navigazione */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--header-height);
+    background-color: var(--secondary-color);
+    z-index: 1000;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+nav {
+    max-width: 1200px;
+    margin: 0 0%px ;
+    padding: 10px 20px;
+    display: flex;
+    align-items: start;
+}
+
+.logo {
+    cursor: pointer;
+    width: 120px;
+    height: auto;
+}
+
+.logo img {
+    width: 100%;
+    height: auto;
+    min-width: 80px;
+    max-width: 120px;
+}
+
+/* Menu principale */
+.hidden-menu {
+
+        position: absolute;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content:space-between;
+        width: 100%;
+        margin-top: 0px;
+        padding: 10px 120px;
+        list-style:none;
+
+    }
+
+.hidden-menu li {
+    margin: 0 10px;
+}
+
+.hidden-menu a {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 10px 15px;
+    font-weight: bold;
+    transition: all var(--transition-speed) ease;
+    border-radius: var(--border-radius);
+    white-space: nowrap;
+
+}
+
+.hidden-menu a:hover {
+    background-color: var(--text-color);
+    color: var(--primary-color);
+}
+
+/* Stili titoli */
+h1, h2 {
+    color: var(--text-color);
+    text-align: center;
+    margin: 20px 0;
+}
+
+h1
+{
+font-size: 2rem;
+}
+h2 { font-size: 1.5rem; }
+
+/* Sezione preventivo */
+#preventivo {
+    background-color: gray;
+    padding: 20px;
+    text-align: center;
+    margin: 20px 0;
+    border-radius: var(--border-radius);
+}
+
+/* Footer */
+footer {
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+    border-radius: var(--border-radius);
+}
+
+footer iframe {
+    width: 100%;
+    height: 300px;
+    border-radius: var(--border-radius);
+    margin: 20px 0;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    :root {
+        --header-height: 60px;
+    }
+
+    nav {
+        flex-wrap: wrap;
+    }
+
+    .hidden-menu {
+
+        position: absolute;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content:space-between;
+        width: 100%;
+        margin-top: 0px;
+        padding: 10px 85px;
+
+    }
+
+    .hidden-menu li {
+        margin: 0;
+    }
+
+    .hidden-menu
+
+    .hidden-menu a {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    .logo {
+        width: 80px;
+    }
+
+    body {
+        padding: 10px;
+        margin: 10px;
+        font-size: 0.9rem;
+        padding-top: calc(var(--header-height) + 40px);
+    }
+
+    h1 { font-size: 1.6rem; }
+    h2 { font-size: 1.3rem; }
+
+    footer iframe {
+        height: 250px;
+    }
+}
+
+/* Rimuove le animazioni non necessarie */
+.show-menu {
+    display: flex !important;
+}
+
+
+
+/* Stili per la sezione carrello */
+/* Stili CSS necessari per il carrello*/
+const style = document.createElement('style');
+style.textContent =`
+    .modal {
+        position: fixed;
+        top : 0 ;
+        left : 0;
+        width : 100%;
+        height : 100%;
+        background : rgba(0, 0, 0, 0.5);
+        display : flex ;
+        justify-content : center;
+        align-items : center;
+        z-index : 1000;
+    }
+
+    .modal-content {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        max-width: 400px;
+        width: 90%;
+    }
+
+    .modal-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .notifica {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        border-radius: 4px;
+        color: white;
+        z-index: 1000;
+    }
+
+    .notifica.success { background-color: #4caf50; }
+    .notifica.error { background-color: #f44336; }
+    .notifica.info { background-color: #2196f3; }
+
+    .carrello-vuoto {
+        text-align: center;
+        padding: 40px;
+    }
+
+    .prodotto-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .prodotto-info {
+        display: flex;
+        justify-content: space-between;
+        flex-grow: 1;
+        margin-right: 15px;
+    }
+
+    .btn-remove {
+        background: none;
+        border: none;
+        color: #f44336;
+        font-size: 1.5em;
+        cursor: pointer;
+        padding: 0 10px;
+    }
+
+    .carrello-footer {
+        margin-top: 20px;
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 4px;
+    }
+
+    .carrello-totale {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        font-size: 1.2em;
+    }
+
+    .carrello-azioni {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+    }
+
+    .btn-danger {
+        background-color: #f44336;
+        color: white;
+    }
+
+    .btn-primary {
+        background-color: #2196f3;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #9e9e9e;
+        color: white;
+    }
+
+.carrello {
+    background-color: white;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    color: var(--secondary-color);
+    margin: 20px 0;
+}
+
+.carrello p {
+    padding: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    font-weight: bold;
+    transition: all var(--transition-speed) ease;
+}
+
+.btn.primary {
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #ff8000, #ffa040);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+}
+
+.btn.primary:hover {
+    background-color: darken(var(--primary-color), 10%);
+}
+
+
+/* Stile per il form */
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Stile per le etichette del form */
+.form-container label {
+    color: black; /* Imposta il colore del testo su nero */
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    font-size: 1rem;
+}
+
+.form-container p {
+    color: black; /* Imposta il colore del testo su nero */
+    font-size: 1rem;
+    text-align: center;
+}
+
+.form-container input[type="text"],
+.form-container input[type="email"],
+.form-container input[type="password"] {
+    width: 100%;
+    max-width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+    transition: border-color var(--transition-speed) ease;
+}
+
+.form-container input[type="text"]:focus,
+.form-container input[type="email"]:focus,
+.form-container input[type="password"]:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.form-container button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: var(--text-color);
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease;
+}
+
+.form-container button:hover {
+    background-color: darkorange;
+}
+
+/* Stile per mobile */
+/**/
+@media (max-width: 768px) {
+   .form-container {
+        padding: 15px;
+        max-width: 100%;
+        margin: 10px;
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="email"],
+    .form-container input[type="password"],
+    .form-container button {
+        font-size: 1rem;
+    }
+}
+
+/*importato da catalogo(da verificare)*/
+/* Aggiungi il tuo stile personalizzato qui */
+        .filter-button {
+          margin: 5px;
+          padding: 10px 20px;
+          background-color: #007BFF;
+          color: #FFF;
+          border: none;
+          cursor: pointer;
+          border-radius: 5px;
+        }
+
+        #newOrder {
+          margin-top: 20px;
+          padding: 10px;
+          border: 1px solid #CCC;
+          justify-content:space-between;
+        }
+    </style>
+
+    <style>
+        body {
+   padding-top: 60px; /* Adatta in base all'altezza della navbar */
+   }
+       /* Miglioramento card */
+       .card {
+           border: none;
+           border-radius: 12px;
+           padding: 16px;
+           margin: 16px;
+           text-align: center;
+           max-width: 300px;
+           box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+           transition: transform 0.3s, box-shadow 0.3s;
+           background-color: #fff;
+       }
+
+       .card:hover {
+           transform: translateY(-5px);
+           box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+       }
+
+       .card img {
+           max-width: 100%;
+           height: auto;
+           border-radius: 8px;
+           margin-bottom: 12px;
+       }
+
+       .card h3 {
+           font-size: 1.2rem;
+           color: #333;
+       }
+
+       .card p {
+           font-size: 1rem;
+           color: #666;
+       }
+
+       .card button {
+           padding: 10px 20px;
+           background: linear-gradient(45deg, #ff8000, #ffa040);
+           border: none;
+           border-radius: 6px;
+           color: white;
+           font-weight: bold;
+           cursor: pointer;
+           transition: background 0.3s;
+       }
+
+       .card button:hover {
+           background: linear-gradient(45deg, #ffa040, #ff8000);
+       }
+
+       /* Griglia catalogo */
+       #productList {
+           display: grid;
+           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+           gap: 20px;
+           padding: 20px;
+       }
+
+       /* Navbar */
+       nav {
+           padding: 10px 20px;
+           position: fixed;
+           width: 100%;
+           top: 0;
+           z-index: 1000;
+       }
+
+       nav ul {
+           display: flex;
+           list-style: none;
+           margin: 0;
+           padding: 0;
+           justify-content: flex-end;
+       }
+
+       nav ul li {
+           margin-left: 20px;
+       }
+
+       nav ul a {
+           text-decoration: none;
+           color: white;
+           font-weight: bold;
+           transition: color 0.3s;
+       }
+
+       nav ul a:hover {
+           color: #333;
+       }
+
+       /* Footer */
+       footer {
+           background-color: #222;
+           color: white;
+           text-align: center;
+           padding: 20px 10px;
+           margin-top: 20px;
+       }
+
+       footer a {
+           color: #ff8000;
+           text-decoration: none;
+           transition: color 0.3s;
+       }
+
+       footer a:hover {
+           color: white;
+       }
+
+
+       /* Barra dei filtri */
+.filter-bar {
+   display: flex;
+   flex-wrap:wrap;
+   justify-content: center;
+   gap: 10px;
+   margin: 20px 0;
+}
+
+.filter-bar .filter-button {
+   padding: 10px 20px;
+   height: fit-content;
+   background-color: #fff;
+   color: #000000;
+   border: none;
+   border-radius: 5px;
+   cursor: pointer;
+   font-weight: bold;
+}
+
+.filter-bar .filter-button:hover {
+   background-color: #e67300;
+}
+
+/* Definisce la struttura a griglia per i prodotti */
+.product-grid {
+ display: grid;
+ grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Crea una griglia fluida con colonne di dimensione minima di 250px */
+ gap: 16px; /* Distanza tra le card */
+}
+
+.product-card {
+   background: #fff;
+   border: 1px solid #ddd;
+   border-radius: 8px;
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+   padding: 15px;
+   text-align: center;
+}
+
+.product-card img {
+   max-width: 100%;
+   height: auto;
+   border-radius: 5px;
+}
+/*30_01_2025*/
+        #newOrder {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #CCC;
+            display: content; /* Enable flexbox for drag and drop */
+
+        }
+        #newOrder .filter-button {
+            margin: 5px; /* Add some margin between buttons */
+        }
+/*stile bottone salva ordine*/
+#saveOrderBtn {
+    width: 50%;
+        margin: 0 50% 0 50%;
+        background: #007BFF;
+        color: white;
+        border: #007BFF;
+        padding: 4px;
+        border-radius: 4px;
+    }
+
+/*fine importato da catalogo*/
+
+#productForm{
+    justify-self: center;
+    background-color: white;
+    border-radius: 10px;
+    color: black;
+    font-size: 15px;
+    padding: 7px;
+     }
+
+#addProductBtn
+{
+    width: 50%;
+    margin: 0 50% 0 50%;
+    background: #007BFF;
+    color: white;
+    border: #007BFF;
+    padding: 4px;
+    border-radius: 4px;
+}
+.carrello{
+    color:black;
+}
+
+#listaCarrello {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    padding: 20px;
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrati</title>
+    <link rel="stylesheet" href="css/style.css">
+    <meta name="theme-color" content="#ff8000"> <!-- Colore del tema -->
+</head>
+<body>
+<div class="background"></div> <!-- Sfondo condiviso tra tutte le pagine -->
+
+<header>
+    <nav>
+        <div class="logo">
+            <img src="logo/logo_colorato.JPG" alt="Pirotecnica F.lli Massa" />
+        </div>
+        <ul class="hidden-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="login.html">Accedi</a></li>
+        </ul>
+    </nav>
+</header>
+<main>
+    <h1>Registrati</h1>
+    <section class="form-container">
+        <form id="registerForm">
+            <input type="text" id="name" name="name" placeholder="Nome completo" required />
+            <input type="email" id="email" name="email" placeholder="Email" required />
+            <input type="password" id="password" name="password" placeholder="Password" required />
+            <input type="hidden" id="role" name="role" value="user">
+
+            <button type="submit">Registrati</button>
+        </form>
+        <p id="message"></p>
+        <p>Hai già un account? <a href="login.html">Accedi qui</a>.</p>
+    </section>
+</main>
+
+<section id="preventivo" class="gray-strip">
+    <h2>Richiedi un Preventivo</h2>
+    <p>Per richiedere un preventivo per uno spettacolo, visita il nostro <a href="https://www.pirotecnicamassa.com/preventivi/" target="_blank">sito web</a>.</p>
+</section>
+
+<footer>
+    <div id="mappa">
+        <!-- Embed Google Maps -->
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2573.1214897785653!2d9.092539775086925!3d39.29401532320625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12e73731b2688751%3A0x50323328ba8e61d5!2sPirotecnica%20Fratelli%20Massa%20Store!5e1!3m2!1sit!2sit!4v1727449256281!5m2!1sit!2sit" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+    <p>&copy; 2024 Vendita Fuochi d'Artificio. Tutti i diritti riservati.</p>
+</footer>
+
+<script>
+        document.getElementById("registerForm").addEventListener("submit", async function (event) {
+            event.preventDefault(); // Impedisce il comportamento predefinito del form
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+                    const role = document.getElementById("role").value; // Get the role value from the hidden input
+
+            const messageElement = document.getElementById("message"); // Elemento per mostrare i messaggi
+
+            try {
+                const response = await fetch("http://localhost:8080/register", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name, email, password, role})
+                });
+
+                if (response.status === 409) {
+                    messageElement.textContent = "Email già registrata. Usa un'altra email o esegui il cambio password.";
+                    messageElement.style.color = "red";
+                } else if (response.ok) {
+                    messageElement.textContent = "Registrazione completata con successo! Benvenuto, " + name;
+                    messageElement.style.color = "green";
+                } else {
+                    messageElement.textContent = "Errore durante la registrazione.";
+                    messageElement.style.color = "red";
+                }
+            } catch (error) {
+                messageElement.textContent = "Errore di connessione.";
+                messageElement.style.color = "red";
+            }
+        });
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+package com.postgresql.pirotecnicamassa.controller;
+
+import com.postgresql.pirotecnicamassa.model.Ordine;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/ordini")
+@CrossOrigin("*") // Permette richieste dal frontend
+public class OrdineController {
+
+    @Autowired
+    private JavaMailSender mailSender;
+
+    @PostMapping("/invia-email")
+    public String inviaEmail(@RequestBody Ordine ordine, @RequestParam String emailUtente) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setFrom("ecommerce@pirotecnicamassa.com");
+            helper.setReplyTo(emailUtente);// Cambialo con il tuo mittente autorizzato
+            helper.setTo(ordine.getEmail());
+            helper.setSubject("Nuovo Ordine Ricevuto");
+            helper.setText(generaCorpoEmail(ordine, emailUtente), true); // Passiamo l'email dell'utente
+
+            mailSender.send(message);
+            return "Email inviata con successo!";
+        } catch (MessagingException e) {
+            return "Errore nell'invio dell'email: " + e.getMessage();
+        }
+    }
+
+    private String generaCorpoEmail(Ordine ordine, String emailUtente) {
+        StringBuilder sb = new StringBuilder();
+        double totaleSpesa = 0.0; // Variabile per calcolare il totale
+
+        sb.append("<h2>Nuovo Ordine Ricevuto</h2>");
+        sb.append("<p>Abbiamo ricevuto il tuo ordine con successo.</p>");
+        sb.append("<p><strong>Email dell'utente loggato:</strong> ").append(emailUtente).append("</p>");
+        sb.append("<ul>");
+
+        for (var prodotto : ordine.getProdotti()) {
+            double subTotale = prodotto.getQuantita() * prodotto.getPrezzo(); // Calcolo del subtotale
+            totaleSpesa += subTotale; // Aggiorniamo il totale
+
+            sb.append("<li>")
+                    .append(prodotto.getQuantita())
+                    .append(" x ")
+                    .append(prodotto.getNome())
+                    .append(" - €")
+                    .append(prodotto.getPrezzo())
+                    .append(" (Totale: €")
+                    .append(String.format("%.2f", subTotale)) // Formattiamo il subtotale con due decimali
+                    .append(")</li>");
+        }
+
+        sb.append("</ul>");
+        sb.append("<h3>Totale Ordine: €").append(String.format("%.2f", totaleSpesa)).append("</h3>");
+        sb.append("<p>Grazie per aver acquistato con noi!</p>");
+        return sb.toString();
+    }
+}

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrello - Pirotecnica F.lli Massa</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="background"></div>
+
+    
+    <header>
+        <nav>
+            <div class="logo">
+                <img src="logo/logo_colorato.JPG" alt="Logo Pirotecnica F.lli Massa">
+            </div>
+            <ul class="hidden-menu">
+                <li><a href="dashboard.html">Home</a></li>
+                <li><a href="catalogo.html">Catalogo</a></li>
+                <div class="butt_name">
+                    <button id="userNameButton" class="name">Nome</button>
+                </div>
+            </ul>
+
+        </nav>
+    </header>
+
+    <main>
+        <h1>Il tuo Carrello</h1>
+        <div class="section carrello">
+            <h2 class="carrello">Prodotti nel Carrello</h2>
+            <div id="listaCarrello"></div>
+            <button id="inviaOrdine" class="btn primary">Invia il tuo ordine</button>
+        </div>
+    </main>
+
+
+    <section id="preventivo" class="section gray-strip">
+        <h2>Richiedi un Preventivo</h2>
+        <p>Per richiedere un preventivo per uno spettacolo, visita il nostro 
+            <a href="https://www.pirotecnicamassa.com/preventivi/" 
+               target="_blank" 
+               rel="noopener noreferrer">sito web</a>.
+        </p>
+    </section>
+
+    <footer>
+        <div id="mappa"></div>
+        <p>© 2024 Vendita Fuochi d'Artificio. Tutti i diritti riservati.</p>
+    </footer>
+
+    <!--SCRIVI ADMIN SE IL RUOLO E' ADMIN ALTRIMENTI SCRIVI SOLO IL NOME(VERIFICATO OK)-->
+    <script>
+        //mostra nome utente e ruolo se admin
+        //Recupera i dati salvati in sessionStorage
+            const userName = sessionStorage.getItem("userName");
+            const userRole = sessionStorage.getItem("userRole");
+
+        // Riferimento al bottone con ID "userNameButton"
+            const userNameButton = document.getElementById("userNameButton");
+
+        // Aggiorna il testo del pulsante solo se il ruolo è "ADMIN"
+            if (userName) {
+                if (userRole === "ADMIN") {
+                    userNameButton.textContent = `${userName} (ADMIN)`;
+                } else {
+                    userNameButton.textContent = `${userName}`;
+                }
+            } else {
+                userNameButton.textContent = "Utente non riconosciuto";
+            }
+    </script>
+
+<!--RECUPERO PRODOTTI DA CATALOGO LOCALSTORAGE-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let carrello = JSON.parse(localStorage.getItem("carrello")) || [];
+            const carrelloContainer = document.getElementById("listaCarrello");
+            const totaleContainer = document.createElement("div");
+            totaleContainer.id = "totaleCarrello";
+            carrelloContainer.after(totaleContainer); // Inserisce il totale sotto la lista dei prodotti
+
+            if (carrello.length === 0) {
+                carrelloContainer.innerHTML = "<p>Il carrello è vuoto.</p>";
+                totaleContainer.innerHTML = "";
+                return;
+            }
+
+            carrelloContainer.innerHTML = ""; // Pulisce il contenitore prima di aggiungere gli elementi
+
+            carrello.forEach(prodotto => {
+                const prodottoHTML = `
+                    <div class="card carrello-item">
+                        <img class="card-img" src="${prodotto.immagineUrl}" alt="${prodotto.nome}">
+                        <div class="card-body">
+                            <h3 class="card-title">${prodotto.nome}</h3>
+                            <p class="card-text">${prodotto.descrizione}</p>
+                            <p class="card-price"><strong>€${prodotto.prezzo.toFixed(2).replace(".", ",")}</strong></p>
+
+                            <!-- Controlli quantità -->
+                            <div class="quantita-container">
+                                <button class="btn decrementa-btn" onclick="aggiornaQuantita(${prodotto.id}, -1)">-</button>
+                                <span id="quantita-${prodotto.id}" class="card-quantity">${prodotto.quantita}</span>
+                                <button class="btn incrementa-btn" onclick="aggiornaQuantita(${prodotto.id}, 1)">+</button>
+                            </div>
+
+                            <button class="btn rimuovi-btn" onclick="rimuoviDalCarrello(${prodotto.id})">Rimuovi</button>
+                        </div>
+                    </div>
+                `;
+                carrelloContainer.innerHTML += prodottoHTML;
+            });
+
+            calcolaTotale(); // Calcola il totale iniziale
+        });
+
+        // Funzione per aggiornare la quantità di un prodotto nel carrello
+        function aggiornaQuantita(productId, cambio) {
+            let carrello = JSON.parse(localStorage.getItem("carrello")) || [];
+
+            carrello = carrello.map(prodotto => {
+                if (prodotto.id === productId) {
+                    prodotto.quantita = Math.max(1, prodotto.quantita + cambio); // Assicura che la quantità sia almeno 1
+                }
+                return prodotto;
+            });
+
+            localStorage.setItem("carrello", JSON.stringify(carrello));
+            document.getElementById(`quantita-${productId}`).textContent = carrello.find(p => p.id === productId).quantita;
+
+            calcolaTotale(); // Aggiorna il totale dopo la modifica della quantità
+        }
+
+        // Funzione per rimuovere un prodotto dal carrello
+        function rimuoviDalCarrello(productId) {
+            let carrello = JSON.parse(localStorage.getItem("carrello")) || [];
+            carrello = carrello.filter(p => p.id !== productId);
+            localStorage.setItem("carrello", JSON.stringify(carrello));
+            location.reload(); // Ricarica la pagina per aggiornare la lista
+        }
+
+        // Funzione per calcolare il totale del carrello
+        function calcolaTotale() {
+            let carrello = JSON.parse(localStorage.getItem("carrello")) || [];
+            let totale = carrello.reduce((sum, prodotto) => sum + (prodotto.prezzo * prodotto.quantita), 0);
+
+            document.getElementById("totaleCarrello").innerHTML = `<h3>Totale: <strong>€${totale.toFixed(2)}</strong></h3>`;
+        }
+    </script>
+
+<!--MANDARE LA MAIL A LORU.DAVIDE.PIROTECNICA.MASSA@GMAIL.COM-->
+    <script>
+       document.getElementById("inviaOrdine").addEventListener("click", function () {
+    let carrello = JSON.parse(localStorage.getItem("carrello")) || [];
+    let userEmail = sessionStorage.getItem("userEmail"); // Recupera l'email dell'utente loggato
+    let storeEmail ="ecomm.pirotecnicamassa@gmail.com"; //email negozio
+    if (!userEmail) {
+        alert("Errore: Email utente non trovata. Effettua il login.");
+        return;
+    }
+
+    if (carrello.length === 0) {
+        alert("Il carrello è vuoto!");
+        return;
+    }
+
+    // Creiamo il payload da inviare al backend
+    let ordine = {
+        email: storeEmail, // Email destinatario corretta, mail del negozio
+        prodotti: carrello
+    };
+
+    // Invia i dati al backend tramite una richiesta POST
+    fetch(`http://localhost:8080/api/ordini/invia-email?emailUtente=${encodeURIComponent(userEmail)}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(ordine)
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Ordine inviato con successo!");
+            localStorage.removeItem("carrello"); // Svuota il carrello dopo l'invio
+            location.reload();
+        } else {
+            alert("Errore nell'invio dell'ordine.");
+        }
+    })
+    .catch(error => {
+        console.error("Errore:", error);
+        alert("Errore nella connessione al server.");
+    });
+});
+    </script>
+<!--RICONOSCIMENTO EMAIL UTENTE IN CONSOLE F12-->
+    <script>document.addEventListener("DOMContentLoaded", function () {
+    let emailUtente = sessionStorage.getItem("userEmail");
+
+    if (!emailUtente) {
+        console.warn("Attenzione: L'email dell'utente non è stata trovata. Effettua il login.");
+        document.getElementById("userNameButton").textContent = "Effettua il login";
+    } else {
+        console.log("Email utente loggato:", emailUtente); // 🔍 DEBUG
+    }
+});
+    </script>
+
+
+
+
+</body>
+</html>

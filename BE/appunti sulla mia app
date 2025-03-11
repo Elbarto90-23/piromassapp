@@ -1,0 +1,89 @@
+Installation Directory: C:\Program Files\PostgreSQL\17
+Server Installation Directory: C:\Program Files\PostgreSQL\17
+Data Directory: C:\Program Files\PostgreSQL\17\data
+Database Port: 5432
+Database Superuser: postgres
+Operating System Account: NT AUTHORITY\NetworkService
+Database Service: postgresql-x64-17
+Command Line Tools Installation Directory: C:\Program Files\PostgreSQL\17
+pgAdmin4 Installation Directory: C:\Program Files\PostgreSQL\17\pgAdmin 4
+Stack Builder Installation Directory: C:\Program Files\PostgreSQL\17
+Installation Log: C:\Users\lorir\AppData\Local\Temp\install-postgresql.log
+
+26 _ 01 _ 2025
+    aggiunto personDto
+    sistemato registrati
+    sistmato inserimento prodotti
+27 _ 01 _ 2025
+    sistemati ruoli(verificare come viene assegnato ADMIN)
+    productGrid mette le card con il movimento
+28 _ 01 _ 2025
+    aggiunto bottone aggiungi al carrello(non funzionante)
+    il prodotto viene visualizzato correttamente
+29 _ 01 _ 2025
+    sistemato codice pagina catalogo
+30 _ 01 _ 2025
+    modificata pagina login
+    rimosso :<!--    } catch (error) {-->
+             <!--        console.error("Errore nel caricamento dei prodotti:", error);-->
+             <!--    }-->
+    che generava un messaggio errore , ora il productForm aggiunge correttamente il prodotto con messaggio corretto
+        ---------------------------------------
+30_01_2025
+    l'applicazione ha la registrazione funzionante;
+    se cambio role all'utente da db questo viene gestito correttamente;
+    inserimento nuovi prodotti e categorie corretto;
+    2025-01-30T16:52:12.023+01:00  WARN 8292 ---(RISOLTI);
+    drag & drop abilitato;
+    salvataggio newOrder in local storage
+31_01_2025
+    eseguiti test di funzionamento,
+    DA FARE
+    {(disabilitare drag & drop per userRole=user).
+    verificare la logica di salvataggio dell'ordine delle categorie e
+    nascondere il bottone salva ordine a userRole=user}
+
+05_02_25
+    risolto problema fetch('/saveOrder')
+
+6_02_2025
+    style spostati nella pagina dedicata css
+
+10_02_2024
+    il bottone per salvare l'ordine dei bottoni (categorie) adesso è visibile solo ad ADMIN
+    rimosso il catalogo per allegerire zip
+    imposto uno style al productForm
+11_02_2025
+    prove generiche e nuovo zip
+    sistemato ordine script nella pagina catalogo.html
+13_02_2025
+    il drag&drop funziona e viene salvato nel db
+        (correzioni da applicare:
+        il bottone salva ordine è da togliere
+        correzione nelle card quando premo i bottone aggiungi al carrello, il prodotto deve essere caricato nella pagina del carrello
+        )
+15_02_2025
+    il drag&drop funziona direttamente su filterBar e salva nel db, ora viene recuperato da tutti gli utenti
+    il bottone Salva Ordine è nascosto agli user
+    ho finito il catalogo funziona correttamente (verificare l'invio al carrello)
+16_02_2025
+    sto passando al carrello i dati delle card
+    carrello terminato
+17_02_2025
+    mail configurata con mailtrip//
+                                    spring.mail.host=smtp.mailtrap.io
+                                    spring.mail.port=2525
+                                    spring.mail.username=dc78423d3f4282
+                                    spring.mail.password=256a487f863888
+    (modifiche css in alcuni punti da rivedere e ricaricare tutti i prodotti nel db, fare nuovi test)
+18_02_2025
+    integrazione mail del utente nel corpo della mail (funzionante)
+    rimesso il catalogo
+21_02_2025
+    sostituito mailTrap con gmail
+    la mail viene mandata da ecomm.pirotecnicamassa@mail.com a loru.davide.pirotecnica.massa@gmail.com
+    (modificare la ricezione della mail )
+24_02_2025
+    modificato visualizzazione prezzi tipo € xx,xx
+11_03_2025
+    email che arrivano sia a ecomm.pirotecnicamassa@gmail.com sia a utente 

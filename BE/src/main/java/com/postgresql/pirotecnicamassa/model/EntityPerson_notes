@@ -1,0 +1,52 @@
+package com.postgresql.pirotecnicamassa.model; // Assicurati che il package sia corretto
+
+import jakarta.persistence.*; // Import per JPA
+import lombok.Data; // Import per Lombok (opzionale, ma consigliato)
+
+@Entity // Indica che questa classe è un'entità JPA
+@Table(name = "prodotto") // Specifica il nome della tabella nel database (se diverso dal nome della classe)
+@Data // Genera automaticamente getter, setter, equals, hashCode e toString (Lombok)
+public class Prodotto {
+
+    @Id // Indica che questo campo è la chiave primaria
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // Strategia di generazione automatica dell'ID (IDENTITY per PostgreSQL)
+    private Long id;
+
+    @Column(name = "categoria") // Specifica il nome della colonna nel database (se diverso dal nome del campo)
+    private String categoria;
+
+    @Column(name = "descrizione")
+    private String descrizione;
+
+    @Column(name = "disponibilita")
+    private boolean disponibilita;
+
+    @Column(name = "immagine_url")
+    private String immagineUrl;
+
+    @Column(name = "nome")
+    private String nome;
+
+    @Column(name = "position")
+    private Integer position; // Usa Integer per permettere valori null
+
+    @Column(name = "prezzo")
+    private Double prezzo; // Usa Double per numeri decimali (o BigDecimal per maggiore precisione)
+
+    // Costruttori (se necessari, Lombok può generarli)
+    public Prodotto() {} // Costruttore senza argomenti richiesto da JPA
+
+    public Prodotto(String categoria, String descrizione, boolean disponibilita, String immagineUrl, String nome, Integer position, Double prezzo) {
+        this.categoria = categoria;
+        this.descrizione = descrizione;
+        this.disponibilita = disponibilita;
+        this.immagineUrl = immagineUrl;
+        this.nome = nome;
+        this.position = position;
+        this.prezzo = prezzo;
+    }
+
+
+    // Getter e setter (se non usi Lombok)
+    // ...
+}

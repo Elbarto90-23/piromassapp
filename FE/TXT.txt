@@ -1,0 +1,200 @@
+
+
+<!--<script>//nuovo invio categorie al db-->
+<!--    document.addEventListener("DOMContentLoaded", () => {-->
+<!--    const newOrderContainer = document.getElementById("newOrder");-->
+
+<!--    // Inizializza Dragula-->
+<!--    dragula([newOrderContainer]).on("drop", function () {-->
+<!--        salvaOrdineNelDb();-->
+<!--    });-->
+
+<!--    async function salvaOrdineNelDb() {-->
+<!--        const ordine = Array.from(newOrderContainer.children).map(el => el.textContent.trim());-->
+
+<!--        const orderData = ordine; // Il backend si aspetta un array JSON puro-->
+
+<!--        try {-->
+<!--            const response = await fetch("http://localhost:8080/api/ordini/saveOrder", {-->
+<!--                method: "POST",-->
+<!--                headers: {-->
+<!--                    "Content-Type": "application/json"-->
+<!--                },-->
+<!--                body: JSON.stringify(orderData)-->
+<!--            });-->
+
+<!--            if (response.ok) {-->
+<!--                console.log("Ordine salvato con successo!");-->
+<!--            } else {-->
+<!--                console.error("Errore nel salvataggio dell'ordine");-->
+<!--            }-->
+<!--        } catch (error) {-->
+<!--            console.error("Errore di rete:", error);-->
+<!--        }-->
+<!--    }-->
+<!--});-->
+
+<!--</script>-->
+<!--<script>-->
+<!--    // Inizializza Dragula sui container dei filtri e dei prodotti-->
+<!--    document.addEventListener("DOMContentLoaded", () => {-->
+<!--        const filterContainer = document.getElementById("filterBar");-->
+<!--        const newOrderContainer = document.getElementById("newOrder");-->
+
+<!--        // Configura Dragula per i container-->
+<!--        dragula([filterContainer, newOrderContainer]).on('drop', function (el, target, source, sibling) {-->
+<!--            console.log("Elemento spostato:", el);-->
+<!--            console.log("Target:", target);-->
+<!--            console.log("Source:", source);-->
+<!--            console.log("Sibling:", sibling);-->
+
+<!--            // Salva la nuova disposizione (opzionale)-->
+<!--            salvaDisposizione(target.id);-->
+<!--        });-->
+
+<!--        function salvaDisposizione(containerId) {-->
+<!--            const container = document.getElementById(containerId);-->
+<!--            const ordine = Array.from(container.children).map(child => child.textContent.trim());-->
+<!--            localStorage.setItem(containerId, JSON.stringify(ordine));-->
+<!--            console.log(`Salvato nuovo ordine per ${containerId}:`, ordine);-->
+<!--        }-->
+
+<!--        // Carica la disposizione salvata (opzionale)-->
+<!--        function caricaDisposizione(containerId) {-->
+<!--            const ordineSalvato = JSON.parse(localStorage.getItem(containerId) || "[]");-->
+<!--            const container = document.getElementById(containerId);-->
+
+<!--            if (ordineSalvato.length > 0) {-->
+<!--                ordineSalvato.forEach(testo => {-->
+<!--                    const elemento = Array.from(container.children).find(child => child.textContent.trim() === testo);-->
+<!--                    if (elemento) container.appendChild(elemento);-->
+<!--                });-->
+<!--            }-->
+<!--        }-->
+
+<!--        // Carica le disposizioni salvate per i container-->
+<!--        caricaDisposizione("filterBar");-->
+<!--        caricaDisposizione("productList");-->
+<!--    });-->
+<!--</script>-->
+<!--<script>-->
+<!--    // Inizializza il drag & drop solo per gli ADMIN-->
+<!--document.addEventListener('DOMContentLoaded', () => {-->
+<!--    const userRole = sessionStorage.getItem("userRole");-->
+<!--    const newOrderContainer = document.getElementById("newOrder");-->
+
+<!--    // Se l'utente è un ADMIN, abilita il drag & drop-->
+<!--    if (userRole === "ADMIN") {-->
+<!--        dragula([newOrderContainer]).on("drop", function () {-->
+<!--            salvaOrdineNelDb();-->
+<!--        });-->
+<!--    } else {-->
+<!--        // Se non è ADMIN, disabilita il drag & drop-->
+<!--        newOrderContainer.classList.add('no-drag');  // Aggiungi una classe che previene l'uso di drag & drop-->
+<!--    }-->
+<!--});-->
+<!--</script>-->
+<!--<script>-->
+<!--    if (userRole === "ADMIN") {-->
+<!--        enableDragAndDrop()-->
+<!--        } else {-->
+<!--            console.log (Errore non gestito)-->
+<!--}-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    // Spostare i pulsanti nel nuovo contenitore-->
+<!--    document.addEventListener('DOMContentLoaded', () => {-->
+<!--      const buttons = document.querySelectorAll('.filter-button');-->
+<!--      const newOrderDiv = document.getElementById('newOrder');-->
+
+<!--      buttons.forEach(button => {-->
+<!--        newOrderDiv.appendChild(button);-->
+<!--      });-->
+<!--    });-->
+<!--</script>-->
+
+
+<!--<script>-->
+<!--    function salvaOrdineNelDb(containerId) {-->
+<!--        const container = document.getElementById(containerId);-->
+<!--        const ordine = Array.from(container.children).map(child => child.textContent.trim());-->
+
+<!--        const orderData = {-->
+<!--        customerId: containerId, // Usa un identificatore per il container o per l'ordine-->
+<!--        items: ordine-->
+<!--    };-->
+
+<!--    fetch('http://localhost:8080/api/ordini/saveOrder', {-->
+<!--    method: 'POST',-->
+<!--    headers: {-->
+<!--    'Content-Type': 'application/json'-->
+<!--    },-->
+<!--    body: JSON.stringify(orderData)-->
+<!--    })-->
+<!--    .then(response => {-->
+<!--    if (!response.ok) {-->
+<!--    return response.json().then(errorData => {-->
+<!--    throw new Error(errorData.message || 'Errore sconosciuto');-->
+<!--    });-->
+<!--    }-->
+<!--    return response.json();-->
+<!--    })-->
+<!--    .then(data => {-->
+<!--    console.log('Ordine salvato con successo:', data);-->
+<!--    alert('Ordine salvato nel database!');-->
+<!--    })-->
+<!--    .catch(error => {-->
+<!--    console.error('Errore:', error);-->
+<!--    alert('Si è verificato un errore nel salvataggio dell\'ordine: ' + error.message);-->
+<!--    });-->
+<!--    }-->
+
+<!--</script>-->
+
+<!--<script>-->
+<!--document.addEventListener('DOMContentLoaded', () => {-->
+<!--    fetch('/api/getUserRole')  // Richiedi il ruolo dell'utente-->
+<!--        .then(response => response.json())-->
+<!--        .then(data => {-->
+<!--    const isAdmin = data.role === 'ADMIN';  // Verifica se l'utente è ADMIN-->
+<!--        if (isAdmin) {-->
+<!--    document.getElementById('saveOrderBtn').style.display = 'block';  // Mostra il bottone-->
+<!--    }-->
+<!--})-->
+<!--.catch(error => {-->
+<!--    console.error('Errore nel recupero del ruolo utente:', error);-->
+<!--});-->
+<!--</script>-->
+
+<!--<script>-->
+<!--    // Funzione per mostrare/nascondere il bottone saveOrderBtn in base al ruolo.-->
+<!--    document.addEventListener('DOMContentLoaded', function() {-->
+<!--        const userRole = sessionStorage.getItem("userRole");-->
+
+<!--        if (userRole === 'ADMIN') {-->
+<!--            document.getElementById("saveOrderBtn").style.display = "block";-->
+<!--                } else {-->
+<!--                document.getElementById("saveOrderBtn").style.display = "none";-->
+<!--          }-->
+<!--        });-->
+<!--</script>-->
+<!--<script>-->
+
+<!--    //recupero del salvataggio da db invio dati da postman-->
+<!--    async function caricaOrdineCategorie() {-->
+<!--    const response = await fetch("http://localhost:8080/api/ordini/getOrder");-->
+<!--    const categorie = await response.json();-->
+<!--    const newOrderDiv = document.getElementById("newOrder");-->
+<!--    newOrderDiv.innerHTML = ""; // Pulisce la lista-->
+
+<!--    categorie.sort((a, b) => a.posizione - b.posizione).forEach(cat => {-->
+<!--        const button = document.createElement("button");-->
+<!--        button.textContent = cat.nome;-->
+<!--        button.className = "filter-button";-->
+<!--        newOrderDiv.appendChild(button);-->
+<!--    });-->
+<!--}-->
+
+<!--document.addEventListener("DOMContentLoaded", caricaOrdineCategorie);-->
+<!--</script>-->

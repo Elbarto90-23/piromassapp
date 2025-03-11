@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+
+<html lang="it" >
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Catalogo fuochi d'artificio F.lli Massa - Vendita di articoli pirotecnici di qualità">
+    <title>Catalogo Fuochi d'Artificio - F.lli Massa</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dragula/3.7.3/dragula.min.js"></script>
+    <meta name="theme-color" content="#ff8000">
+
+
+</head>
+<body>
+<div class="background"></div>
+
+<header>
+    <nav>
+        <div class="logo" id="menu-toggle">
+            <img src="logo/logo_colorato.JPG" alt="Pirotecnica F.lli Massa" />
+        </div>
+        <ul id="menu" class="hidden-menu">
+            <li><a href="dashboard.html">Home</a></li>
+            <li><a href="carrello.html">Carrello</a></li>
+            <li class="butt_name">
+                <button id="userNameButton" class="name">Nome</button>
+            </li>
+        </ul>
+
+    </nav>
+</header>
+
+<main>
+    <h1>Catalogo dei Fuochi d'Artificio</h1>
+
+
+    <div id="addProductForm" >
+        <h2>Aggiungi Prodotto</h2>
+        <form id="productForm">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" required><br>
+
+            <label for="descrizione">Descrizione:</label>
+            <textarea id="descrizione" name="descrizione" required></textarea><br>
+
+            <label for="prezzo">Prezzo:</label>
+            <input type="number" id="prezzo" name="prezzo" step="0.01" required><br>
+
+            <label for="immagineUrl">URL Immagine:</label>
+            <input type="file" id="immagineUrl" name="immagineUrl"><br>
+
+            <label for="categoria">Categoria:</label>
+            <input type="text" id="categoria" name="categoria"><br>
+
+            <button id ="addProductBtn" type="submit">Carica Prodotto</button>
+        </form>
+    </div>
+
+    <div id="caricamentoMessaggio"></div>
+
+
+    <div id="catalogo">
+        <h2>Catalogo</h2>
+
+        <!-- Barra dei filtri-->
+        <div id="filterBar" class="filter-bar">
+            <!-- Categorie dinamiche verranno aggiunte qui -->
+        </div>
+
+<!--        30_01_2025-->
+        <button id="saveOrderBtn" class="admin-only" >Salva Ordine</button>
+
+        <div id="productGrid" class="product-grid">
+            <!-- Qui verranno caricati i prodotti -->
+        </div>
+        <div id="productList" style="display:none;">
+            <!-- Prodotti caricati dinamicamente -->
+        </div>
+    </div>
+
+</main>
+
+
+    <p>&copy; 2024 Vendita Fuochi d'Artificio. Tutti i diritti riservati.</p>
+<footer>
+    <div id="mappa">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2573.1214897785653!2d9.092539775086925!3d39.29401532320625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12e73731b2688751%3A0x50323328ba8e61d5!2sPirotecnica%20Fratelli%20Massa%20Store!5e1!3m2!1sit!2sit!4v1727449256281!5m2!1sit!2sit" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+</footer>
+
+
+<!--SCRIVI ADMIN SE IL RUOLO E' ADMIN ALTRIMENTI SCRIVI SOLO IL NOME(VERIFICATO OK)-->
+<script>
+    //mostra nome utente e ruolo se admin
+    //Recupera i dati salvati in sessionStorage
+        const userName = sessionStorage.getItem("userName");
+        const userRole = sessionStorage.getItem("userRole");
+
+    // Riferimento al bottone con ID "userNameButton"
+        const userNameButton = document.getElementById("userNameButton");
+
+    // Aggiorna il testo del pulsante solo se il ruolo è "ADMIN"
+        if (userName) {
+            if (userRole === "ADMIN") {
+                userNameButton.textContent = `${userName} (ADMIN)`;
+            } else {
+                userNameButton.textContent = `${userName}`;
+            }
+        } else {
+            userNameButton.textContent = "Utente non riconosciuto";
+        }
+</script>
+
+<!--VISUALIZZA IL FORM IN BASE AL RUOLO UTENTE/ADMIN-->
+<script>
+    //8) mostra il productForm se userRole===ADMIN
+    document.addEventListener("DOMContentLoaded", function () {
+    const userRole = sessionStorage.getItem("userRole");
+
+    if (userRole === "ADMIN") {
+        document.getElementById("addProductForm").style.display = "block";
+    } else {
+        document.getElementById("addProductForm").style.display = "none";
+    }
+});
+</script>
+
+<!--FORM PER AGGIUNGERE PRODOTTI-->
+<script>
+    //7) se admin puo aggiungere prodotti
+     document.getElementById("productForm").addEventListener("submit", async (event) => {
+         event.preventDefault(); // Evita il refresh della pagina
+
+     const formData = new FormData();
+         formData.append("file", document.getElementById("immagineUrl").files[0]);
+         formData.append("nome", document.getElementById("nome").value);
+         formData.append("descrizione", document.getElementById("descrizione").value);
+         formData.append("prezzo", parseFloat(document.getElementById("prezzo").value));
+         formData.append("categoria", document.getElementById("categoria").value);
+
+     try {
+     const response = await fetch("/api/carica",{
+         method: "POST",
+         body: formData,
+         });
+
+         if (response.ok) {
+             document.getElementById("caricamentoMessaggio").innerText = "Prodotto caricato con successo!";
+             caricaProdotti(); // Ricarica la lista dei prodotti
+         } else {
+             document.getElementById("caricamentoMessaggio").innerText = "Errore nel caricamento del prodotto.";
+         }
+     } catch (error) {
+         console.error("Errore di rete:", error);
+         document.getElementById("caricamentoMessaggio").innerText = "Errore di rete durante il caricamento.";
+     }
+});
+    async function caricaProdotti() {
+    try {
+        const response = await fetch("/api/prodotti");
+        const prodotti = await response.json();
+
+        const productList = document.getElementById("productList");
+        productList.innerHTML = ""; // Svuota la lista prima di ricaricare
+
+        prodotti.forEach(prodotto => {
+            const prezzoFormattato = `€ ${prodotto.prezzo.toFixed(2).replace('.', ',')}`;
+            const card = document.createElement("div");
+            card.classList.add("card");
+            card.innerHTML = `
+                <img src="${prodotto.immagineUrl}" alt="${prodotto.nome}">
+                <h3>${prodotto.nome}</h3>
+                <p>${prodotto.descrizione}</p>
+                <p><strong>${prezzoFormattato}</strong></p>
+                <button onclick="aggiungiAlCarrello('${prodotto.id}')">Aggiungi al carrello</button>
+            `;
+            productList.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Errore nel caricamento dei prodotti:", error);
+    }
+}
+
+document.addEventListener("DOMContentLoaded", caricaProdotti);
+</script>
+
+
+<!-- CARICAMENTO DI TUTTI I PRODOTTI DAL DB(IMPOSTATO NON VISIBILE PER LASCIARE SPAZIO ALLE CATEGORIE)-->
+<script>
+    // Gestione invio form nuovi prodotti
+    document.getElementById("productForm").addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const prodotto = {
+            nome: document.getElementById("nome").value,
+            descrizione: document.getElementById("descrizione").value,
+            prezzo: parseFloat(document.getElementById("prezzo").value),
+            immagineUrl: document.getElementById("immagineUrl").value,
+            categoria: document.getElementById("categoria").value,
+            disponibilita: true//anche db disponibilita
+        };
+
+        try {
+            const response = await fetch("/api/carica", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(prodotto),
+            });
+
+            if (response.ok) {
+                document.getElementById("caricamentoMessaggio").innerText = "Prodotto caricato con successo!";
+                caricaProdotti(); // Ricarica la lista dei prodotti
+            } else {
+                document.getElementById("caricamentoMessaggio").innerText = "Errore nel caricamento del prodotto.";
+            }
+        } catch (error) {
+            console.error("Errore di rete:", error);
+        }
+    });
+
+    document.addEventListener("DOMContentLoaded", caricaProdotti);
+
+    // 6) Gestione caricamento tutti prodotti
+    //API/prodotti
+        async function caricaProdotti() {
+    try {
+        const response = await fetch("/api/prodotti");
+        const prodotti = await response.json();
+
+        const productList = document.getElementById("productList");
+        productList.innerHTML = ""; // Svuota la lista prima di ricaricare
+
+        prodotti.forEach(prodotto => {
+            const prezzoFormattato = `€ ${prodotto.prezzo.toFixed(2).replace('.', ',')}`;
+            const card = document.createElement("div");
+            card.classList.add("card");
+            card.innerHTML = `
+                <img src="${prodotto.immagineUrl}" alt="${prodotto.nome}">
+                <h3>${prodotto.nome}</h3>
+                <p>${prodotto.descrizione}</p>
+                <p><strong>${prezzoFormattato}</strong></p>
+                <button onclick="aggiungiAlCarrello('${prodotto.id}')">Aggiungi al carrello</button>
+            `;
+            productList.appendChild(card);
+        });
+    } catch (error) {
+        console.error("Errore nel caricamento dei prodotti:", error);
+    }
+}
+</script>
+
+<!--CREA I BOTTONI FILTRO, FILTRA I PRODOTTI PER CATEGORIA-->
+<script>
+    // URL API
+        const API_BASE_URL = "http://localhost:8080/api";
+
+    //3) Carica le categorie e crea i pulsanti filtro
+    //API/categories
+        async function loadCategories() {
+            const response = await fetch(`${API_BASE_URL}/categories`);
+            const categories = await response.json();
+            const filterBar = document.getElementById("filterBar");
+
+            categories.forEach(category => {
+                const button = document.createElement("button");
+                button.textContent = category;
+                button.className = "filter-button";
+                button.addEventListener("click", () => filterProducts(category));
+                filterBar.appendChild(button);
+            });
+        }
+
+<!--// 4 Filtra i prodotti per categoria-->
+    //API/filter
+        async function filterProducts(category) {
+    const response = await fetch(`${API_BASE_URL}/filter?categoria=${category}`);
+    const products = await response.json();
+    const productGrid = document.getElementById("productGrid");
+    productGrid.innerHTML = ""; // Svuota la griglia
+
+    if (products.length === 0) {
+        productGrid.innerHTML = "<p>Seleziona un filtro.</p>";
+    } else {
+        products.forEach(product => {
+            const prezzoFormattato = `€ ${product.prezzo.toFixed(2).replace('.', ',')}`;
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+                <img src="${product.immagineUrl}" alt="${product.nome}">
+                <h3>${product.nome}</h3>
+                <p>${product.descrizione}</p>
+                <p><strong>${prezzoFormattato}</strong></p>
+                <button onclick="aggiungiAlCarrello(${product.id})">Aggiungi al carrello</button>
+            `;
+            productGrid.appendChild(card);
+        });
+    }
+}
+
+
+    // Inizializza
+        loadCategories();
+        filterProducts(""); // Carica tutti i prodotti di default
+
+
+    // Gestione dei filtri
+        document.querySelectorAll('.filtri button').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelectorAll('.filtri button').forEach(btn => {
+                    btn.classList.remove('attivo');
+                });
+                this.classList.add('attivo');
+            });
+        });
+</script>
+
+
+<!--ABILITA DRAG&DROP SOLO ADMIN SALVA NEL DB ORDINE FILTRI-->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    const userRole = sessionStorage.getItem("userRole");
+    const filterContainer = document.getElementById("filterBar");
+    const saveOrderBtn = document.getElementById("saveOrderBtn");
+
+    if (!filterContainer) {
+        console.error("DEBUG: Il container dei filtri non è stato trovato!");
+        return;
+    }
+
+    if (userRole === "ADMIN") {
+        saveOrderBtn.style.display = "block";
+        enableDragAndDrop();
+    } else {
+        saveOrderBtn.style.display = "none";
+        filterContainer.classList.add("no-drag");
+    }
+
+    function enableDragAndDrop() {
+        if (window.dragulaInstance) {
+            window.dragulaInstance.destroy();
+        }
+
+        window.dragulaInstance = dragula([filterContainer])
+            .on("drop", (el, target) => {
+                console.log("DEBUG: Elemento spostato!", el.textContent);
+                salvaOrdineNelDb();
+            });
+
+        console.log("DEBUG: Dragula è stato attivato correttamente su #filterBar!");
+    }
+
+    async function salvaOrdineNelDb() {
+        const ordine = Array.from(filterContainer.children).map(el => el.textContent.trim());
+
+        console.log("DEBUG: Dati inviati al backend:", JSON.stringify(ordine));
+
+        try {
+            const response = await fetch("http://localhost:8080/api/ordini/saveOrder", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(ordine) // Invia solo l'array puro
+            });
+            if (response.ok) {
+                console.log("Ordine salvato con successo!");
+                alert("Ordine salvato nel database!");
+            } else {
+                const errorText = await response.text();
+                console.error("Errore nel salvataggio dell'ordine:", errorText);
+            }
+        } catch (error) {
+            console.error("Errore di rete:", error);
+            alert("Errore nel salvataggio dell'ordine: " + error.message);
+        }
+    }
+
+    function aggiungiEventiCategorie() {
+        document.querySelectorAll("#filterBar .filter-button").forEach(button => {
+            button.replaceWith(button.cloneNode(true)); // Rimuove eventi precedenti
+        });
+
+        document.querySelectorAll("#filterBar .filter-button").forEach(button => {
+            button.addEventListener("click", () => {
+                const categoria = button.textContent.trim();
+                console.log("DEBUG: Categoria cliccata ->", categoria);
+                filterProducts(categoria);
+            });
+        });
+
+        console.log("DEBUG: Eventi click forzati sui pulsanti delle categorie!");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        aggiungiEventiCategorie();
+    });
+
+    if (window.dragulaInstance) {
+        window.dragulaInstance.on("drop", () => {
+            console.log("DEBUG: Elemento spostato, riattivo gli eventi click.");
+            aggiungiEventiCategorie();
+        });
+    }
+});
+
+</script>
+<!--RECUPERA E MOSTRA DAL DB LA NUOVA DISPOSIZIONE DEI FILTRI-->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+    caricaOrdineDalDb(); // Recupera l'ordine dal DB
+    aggiungiEventiCategorie();
+});
+
+    async function caricaOrdineDalDb() {
+    try {
+        const response = await fetch("http://localhost:8080/api/ordini/getOrder"); // Assicurati che l'endpoint sia corretto
+        if (!response.ok) {
+            throw new Error("Errore nel recupero dell'ordine");
+        }
+
+        const ordineSalvato = await response.json();
+        console.log("DEBUG: Ordine recuperato dal database:", ordineSalvato);
+
+        const filterContainer = document.getElementById("filterBar");
+        filterContainer.innerHTML = ""; // Pulisce il contenitore
+
+        ordineSalvato.forEach(categoria => {
+            const button = document.createElement("button");
+            button.textContent = categoria;
+            button.className = "filter-button";
+            button.addEventListener("click", () => filterProducts(categoria));
+            filterContainer.appendChild(button);
+        });
+
+        aggiungiEventiCategorie(); // Riattiva gli eventi click
+    } catch (error) {
+        console.error("Errore nel caricamento dell'ordine:", error);
+    }
+}
+
+</script>
+<!--INVIO PRODOTTO AL CARRELLO PASSANDO PER IL LOCAL STORAGE-->
+<script>
+    function aggiungiAlCarrello(productId) {
+        // Recupera il carrello dal localStorage (se esiste)
+        let carrello = JSON.parse(localStorage.getItem("carrello")) || [];
+
+        // Trova il prodotto corrispondente
+        fetch(`http://localhost:8080/api/prodotti/${productId}`)
+            .then(response => response.json())
+            .then(prodotto => {
+                // Controlla se il prodotto è già nel carrello
+                const prodottoEsistente = carrello.find(p => p.id === prodotto.id);
+
+                if (prodottoEsistente) {
+                    prodottoEsistente.quantita += 1; // Incrementa la quantità
+                } else {
+                    prodotto.quantita = 1; // Aggiunge il prodotto con quantità 1
+                    carrello.push(prodotto);
+                }
+
+                // Salva il carrello aggiornato nel localStorage
+                localStorage.setItem("carrello", JSON.stringify(carrello));
+
+                alert(`"${prodotto.nome}" aggiunto al carrello!`);
+            })
+            .catch(error => console.error("Errore nel recupero del prodotto:", error));
+    }
+</script>
+
+
+</body>
+</html>

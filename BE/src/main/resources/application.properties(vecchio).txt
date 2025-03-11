@@ -1,0 +1,18 @@
+spring.application.name=pirotecnicamassa
+
+### DB Connection ###
+#Set
+spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+spring.datasource.username=postgres
+spring.datasource.password=Bartolomeo
+
+# Dialetto Hibernate per PostgreSQL
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+
+# Configurazione Hibernate per la gestione delle entità  #create
+spring.jpa.hibernate.ddl-auto=update
+# Logging delle query Hibernate (opzionale - utili in caso di degubbing)
+#spring.jpa.show-sql=true
+#spring.jpa.properties.hibernate.format_sql=true
+
+#######################################################################################

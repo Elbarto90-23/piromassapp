@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>Accedi</title>
+    <link href="css/style.css" rel="stylesheet">
+    <link href="manifest.json" rel="manifest">
+    <meta content="#ff8000" name="theme-color">
+</head>
+<body>
+<div class="background"></div>
+<header>
+    <nav>
+        <div class="logo">
+            <img alt="Pirotecnica F.lli Massa" src="logo/logo_colorato.JPG"/>
+        </div>
+        <ul class="hidden-menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="registrati.html">Registrati</a></li>
+        </ul>
+    </nav>
+</header>
+<body>
+<main>
+<h1>Accedi</h1>
+<section class="form-container">
+    <form id="loginForm">
+        <input id="email" name="email" placeholder="Email" required type="email"/>
+        <input id="password" name="password" placeholder="Password" required type="password"/>
+        <button type="submit">Accedi</button>
+    </form>
+    <p id="loginMessage"></p> <!-- Elemento per mostrare i messaggi -->
+    <p>Non hai un account? <a href="registrati.html">Registrati qui</a>.</p>
+</section>
+<p id="loginMessage"></p>
+</main>
+<section class="gray-strip" id="preventivo">
+    <h2>Richiedi un Preventivo</h2>
+    <p>Per richiedere un preventivo per uno spettacolo, visita il nostro <a
+            href="https://www.pirotecnicamassa.com/preventivi/" target="_blank">sito web</a>.</p>
+</section>
+<footer>
+    <div id="mappa">
+        <!-- Embed Google Maps -->
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2573.1214897785653!2d9.092539775086925!3d39.29401532320625!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x12e73731b2688751%3A0x50323328ba8e61d5!2sPirotecnica%20Fratelli%20Massa%20Store!5e1!3m2!1sit!2sit!4v1727449256281!5m2!1sit!2sit" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+
+        </iframe>
+    </div>
+    <p>&copy; 2024 Vendita Fuochi d'Artificio. Tutti i diritti riservati.</p>
+</footer>
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async function (event) {
+     event.preventDefault(); // Impedisce il comportamento predefinito del form
+
+     // Prende i valori dal form
+     const email = document.getElementById("email").value.trim();
+     const password = document.getElementById("password").value.trim();
+     const messageElement = document.getElementById("loginMessage");
+
+     // Controllo di base sui campi
+     if (!email || !password) {
+         messageElement.textContent = "Inserisci email e password.";
+         messageElement.style.color = "red";
+         return;
+     }
+
+     try {
+         // Invio della richiesta al server
+         const response = await fetch("http://localhost:8080/login", {
+             method: "POST",
+             headers: {
+                 "Content-Type": "application/x-www-form-urlencoded"
+             },
+             body: new URLSearchParams({ email, password })
+         });
+
+         const data = await response.json(); // Parsing del JSON restituito dal server
+
+         if (response.ok) {
+             // Salva nome utente e ruolo nel sessionStorage
+             sessionStorage.setItem("userName", data.name);
+             sessionStorage.setItem("userRole", data.role);
+             sessionStorage.setItem("userEmail", data.email);  // ✅ Salva l'email nel sessionStorage
+
+
+             // Mostra il messaggio di successo
+             messageElement.textContent = data.message;
+             messageElement.style.color = "green";
+
+             // Reindirizza alla dashboard dopo 2 secondi
+             setTimeout(() => window.location.href = "dashboard.html", 2000);
+         } else {
+             // Mostra il messaggio di errore restituito dal server
+             messageElement.textContent = data.message;
+             messageElement.style.color = "red";
+         }
+     } catch (error) {
+         // Gestione di errori di rete
+         messageElement.textContent = "Errore di connessione al server.";
+         messageElement.style.color = "red";
+     }
+ });
+
+</script>
+</body>
+</html>
